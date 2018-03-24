@@ -3,10 +3,18 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const http = require('http');
 const app = express();
-
+var expressWs = require('express-ws')(app);
 // API file for interacting with MongoDB
 const api = require('./server/routes/api');
 
+
+app.ws('/echo', function(ws, req) {
+    ws.on('message', function(msg) {
+      ws.send(msg);
+    });
+  });
+  
+  
 // Parsers
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false}));

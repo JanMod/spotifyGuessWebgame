@@ -29,14 +29,15 @@ let response = {
 };
 
 
+
 router.post('/createRoom', (req, res) => {
-    let createdRoom = createNewRoom(req);
-    if (createdRoom) {
-        response.data = createdRoom;
+    console.log(req.body);
+    createNewRoom(req.body, req, result => {
+        response.data = result;
         res.json(response);
-    } else {
-        sendError('Can`t create new Room');
-    }
+    }, err => {
+        sendError(err, res);
+    });
 })
 
 router.get('/Rooms', (req, res) => {
@@ -45,14 +46,23 @@ router.get('/Rooms', (req, res) => {
 })
 
 
-var createNewRoom = function (client) {
-    let room = new Room('Test', client)
-    if(room){
-        rooms.push(room)
-        return room;
+
+var createNewRoom = function (data, client, successCb, errorCb) {
+    if (data.name === "" | data.name === null | data.name === undefined) {
+        errorCb('name is invalid');
     }
-    else{
-        return null;
+
+    let newroom = new Room(data.name, client)
+    if (newroom) {
+        rooms.push(newroom)
+        successCb(newroom);
+    }
+    else {
+        errorCb('Internal Error', {
+            status: 500,
+            data: [],
+            message: 'Internal Error'
+        });
     }
 }
 
