@@ -30,7 +30,7 @@ export class CreateRoomComponent implements OnInit {
 
     this.dialogRef.afterClosed().subscribe(result => {
       if(result){
-        this.rest.createRoom(result).subscribe(data => this.responseSnackBar.openSnackBar(data));
+        this.rest.createRoom(result).subscribe();
       }
      
     })

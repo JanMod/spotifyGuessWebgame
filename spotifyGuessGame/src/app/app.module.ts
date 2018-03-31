@@ -18,11 +18,19 @@ import { MatDialogModule } from '@angular/material';
 import { MatInputModule } from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
+import {MatListModule} from '@angular/material/list';
 
 
 //Service
 import {RestApiService} from './service/restApi.service';
 import {ResponseSnackbarService} from './service/responseSnackbarService/response-snackbar.service';
+import {RoomsServiceService} from './service/roomsService/rooms-service.service';
+import { PipePipe } from './Pipes/pipe.pipe';
+
+
+
+
+
 
 @NgModule({
   declarations: [
@@ -30,7 +38,8 @@ import {ResponseSnackbarService} from './service/responseSnackbarService/respons
     RoomsComponent,
     CreateRoomComponent,
     DialogRoomForm,
-    CreateSnackBar
+    CreateSnackBar,
+    PipePipe
   ],
   imports: [
     BrowserModule,
@@ -44,6 +53,7 @@ import {ResponseSnackbarService} from './service/responseSnackbarService/respons
     HttpClientModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
+    MatListModule
   ],
   exports: [
     MatInputModule,
@@ -51,7 +61,11 @@ import {ResponseSnackbarService} from './service/responseSnackbarService/respons
     MatCheckboxModule,
   ],
   entryComponents:[DialogRoomForm , CreateSnackBar],
-  providers: [RestApiService,ResponseSnackbarService],
+  providers: [
+    RestApiService,
+    ResponseSnackbarService,
+    RoomsServiceService,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
