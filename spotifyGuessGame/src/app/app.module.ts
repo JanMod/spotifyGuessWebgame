@@ -26,6 +26,7 @@ import {RestApiService} from './service/restApi.service';
 import {ResponseSnackbarService} from './service/responseSnackbarService/response-snackbar.service';
 import {RoomsServiceService} from './service/roomsService/rooms-service.service';
 import { PipePipe } from './Pipes/pipe.pipe';
+import { CreateUserComponent } from './components/create-user/create-user.component';
 
 
 
@@ -39,7 +40,8 @@ import { PipePipe } from './Pipes/pipe.pipe';
     CreateRoomComponent,
     DialogRoomForm,
     CreateSnackBar,
-    PipePipe
+    PipePipe,
+    CreateUserComponent
   ],
   imports: [
     BrowserModule,
