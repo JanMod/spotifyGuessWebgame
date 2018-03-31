@@ -4,6 +4,8 @@ const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 const Room = require('../game/room.js');
 
+var ws = global.io;
+
 var rooms = [];
 // Connect
 const connection = (closure) => {
@@ -38,23 +40,21 @@ router.post('/createRoom', (req, res) => {
     }, err => {
         sendError(err, res);
     });
-})
+});
 
 router.get('/Rooms', (req, res) => {
     response.data = rooms;
     res.json(response);
-})
-
-
+});
 
 var createNewRoom = function (data, client, successCb, errorCb) {
-    if (data.name === "" | data.name === null | data.name === undefined) {
-        errorCb('name is invalid');
-    }
 
-    let newroom = new Room(data.name, client)
+    var newroom = new Room(data.name, client)
+
     if (newroom) {
-        rooms.push(newroom)
+        console.log(newroom);
+        global.io.broadcastNewRoom(newroom);
+        rooms.push(newroom);
         successCb(newroom);
     }
     else {

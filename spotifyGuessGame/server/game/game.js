@@ -5,6 +5,10 @@ class Game{
     newGame(){
 
     }
+
+    restart(){
+        
+    }
 }
 
 module.exports = Game;
