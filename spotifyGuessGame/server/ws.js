@@ -12,6 +12,4 @@ module.exports = function (app) {
     _io.broadcastNewRoom =  function (room) {
         _io.sockets.to('newRoom').emit('newRoom', room);
     }
-
-
 }

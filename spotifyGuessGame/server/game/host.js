@@ -1,4 +1,4 @@
-class Player extends User{
+class Host extends User{
     constructor(name){
         super(name)
         //this.icon = TODO
@@ -9,6 +9,17 @@ class Player extends User{
     }
     addPoints(points){
         this.points += points;
+    }
+    addSpotifyToken(token){
+        this.token= token;
+    }
+
+    playMusic(){
+
+    }
+
+    stopMusic(){
+
     }
 }
 

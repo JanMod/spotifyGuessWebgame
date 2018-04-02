@@ -1,19 +1,37 @@
 class Room {
-    constructor(name, host) {
+    constructor(name, host, password) {
         this.id = require('uuid/v4')();
         this.game = require('../game/game.js');
+
         this.name = name;
         this.password = password;
         this.users = [];
         this.max = 8;
-        this.host = host;
-        this.currentUsers = 0;
+        // this.host = host;
         console.log('new room created');
+        this.currentUsers = 0;
+        this.metadata = {
+            id: this.id,
+            name: this.name,
+            password: this.password,
+            numberUser: this.currentUsers,
+            max: this.max
+        }
+        this.socket = global.io.sockets.in(this.id);
     }
 
-    addUser(user) {
-        if (this.currentUsers <= this.max) {
+    join(user) {
+        if (this.currentUsers < this.max) {
             this.currentUsers++;
+            this.metadata = {
+                id: this.id,
+                name: this.name,
+                password: this.password,
+                numberUser: this.currentUsers,
+                max: this.max
+            }
+            this.users[user.id] = user;
+            this.sendMetadataUpdate()
             return true;
         }
         return false;
@@ -37,6 +55,11 @@ class Room {
 
     broadcast() {
 
+    }
+
+    sendMetadataUpdate() {
+        console.log(this.metadata);
+        global.io.broadcastNewRoom(this.metadata);
     }
 }
 
