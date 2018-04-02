@@ -31,5 +31,9 @@ export class RoomsServiceService {
 		return this.roomEvent;
 	}
 
+	joinRoom(id){
+		return this.wsService.joinRoom(id);
+	}
+
 	
 }
