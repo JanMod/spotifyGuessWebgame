@@ -1,6 +1,10 @@
+<h1>Rooms</h1>
+
+<app-create-room></app-create-room>
+
 <mat-list>
     <div>
-        <mat-list-item *ngFor="let key of rooms | keys">{{key.value.name}} {{key.value.numberUser}}/{{key.value.max}}
+        <mat-list-item *ngFor="let key of rooms | keys"  (click)="join(key.key)">{{key.value.name}} {{key.value.numberUser}}/{{key.value.max}}
             <mat-divider></mat-divider>
         </mat-list-item>
     </div>

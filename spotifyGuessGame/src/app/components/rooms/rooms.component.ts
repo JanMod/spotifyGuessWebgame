@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RoomsServiceService } from '../../service/roomsService/rooms-service.service';
 import { PipePipe } from '../../Pipes/pipe.pipe';
-
+import { WarningDialogService } from '../../service/warning-dialog/warning-dialog.service';
 @Component({
   selector: 'app-rooms',
   templateUrl: './rooms.component.html',
@@ -13,7 +13,7 @@ export class RoomsComponent implements OnInit {
   private rooms: any[] = [];
   private config: JSON;
 
-  constructor(private roomService: RoomsServiceService) {
+  constructor(private roomService: RoomsServiceService, private warningDialog: WarningDialogService) {
 
   }
 
@@ -25,7 +25,7 @@ export class RoomsComponent implements OnInit {
     })
 
     this.roomService.getCurrentRoomsWS().subscribe(v => {
-      if(!v.id){
+      if (!v.id) {
         return;
       }
       this.rooms[v.id] = v;
@@ -34,5 +34,17 @@ export class RoomsComponent implements OnInit {
       console.log('error' + error);
     })
   }
+
+  join(id) {
+    this.warningDialog.openDialog().subscribe(value => {
+      if(value){
+        this.roomService.joinRoom(id).subscribe(value =>{
+        
+        }),
+        error => {
+       
+        }
+      }
+    })}
 
 }
