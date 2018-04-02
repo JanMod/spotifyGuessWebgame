@@ -1,17 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Component } from '@angular/core/src/metadata/directives';
+import { UserService} from './user.service';
 import * as Rx from 'rxjs/Rx';
 import * as io from 'socket.io-client';
 
 @Injectable()
 
 export class RestApiService {
-
+    private data:JSON;
     private createRoomRoute: string;
     response: any;
     private socket;
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private user: UserService) {
     }
 
 
@@ -35,7 +36,6 @@ export class RestApiService {
         )
       
     }
-
 
 
     private create(url): Rx.Subject<MessageEvent> {
@@ -63,11 +63,22 @@ export class RestApiService {
     }
 
     createRoom(data) {
+        
+        console.log(data);
         return this.http.post('http://localhost:8000/api/createRoom', data);
     }
 
+    createUser(name){
+        return this.http.post('http://localhost:8000/api/createUser', name);
+    }
+
+
     getRooms(){
         return this.http.get('http://localhost:8000/api/Rooms');
+    }
+
+    joinRoom(id){
+        return this.http.post('http://localhost:8000/api/joinRoom', {user: this.user.getUser(), id: id});
     }
 
     leaveRoom() {
