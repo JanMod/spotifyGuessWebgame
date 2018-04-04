@@ -19,7 +19,8 @@ export class CreateUserComponent implements OnInit {
     this.rest.createUser({ name: this.name }).subscribe(
       response => {
         this.user.setUser(response);
-        console.log(response);
+        console.log(this.user.getId());
+        this.rest.connectUserWs(this.user.getId());
         this.router.navigate(['/rooms'], {replaceUrl: true});
       },
       error => {

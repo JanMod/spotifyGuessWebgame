@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class UserService {
   private id:string;
-  private user:JSON
+  private user:any
   constructor() { }
 
   setId(id){
@@ -11,7 +11,7 @@ export class UserService {
   }
 
   getId():string{
-    return this.id;
+    return this.user.id;
   }
 
   setUser(user){

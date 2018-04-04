@@ -13,6 +13,7 @@ export class RestApiService {
     response: any;
     private socket;
     constructor(private http: HttpClient, private user: UserService) {
+        this.socket = io.connect("localhost:8000");
     }
 
 
@@ -27,14 +28,28 @@ export class RestApiService {
     }
 
     public connectIO (url): Rx.Observable<MessageEvent>{
-        this.socket = io.connect(url);
+     
         var _socket = this.socket;
         return Rx.Observable.fromEventPattern( data =>{
             _socket.on('newRoom', data);
         }
             
         )
-      
+
+    }
+
+    public connectUserWs (id): Rx.Observable<MessageEvent>{
+       
+        var _socket = this.socket;
+        this.socket.emit(id, {kur:"nic"}, data =>{
+            console.log("worked");
+        });
+        return Rx.Observable.fromEventPattern( data =>{
+            _socket.on(id, data);
+        }
+            
+        )
+
     }
 
 

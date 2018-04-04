@@ -1,5 +1,5 @@
 class Room {
-    constructor(name, host, password) {
+    constructor(name, host, password, ws) {
         this.id = require('uuid/v4')();
         this.game = require('../game/game.js');
 
@@ -17,7 +17,15 @@ class Room {
             numberUser: this.currentUsers,
             max: this.max
         }
-        this.socket = global.io.sockets.in(this.id);
+        if (ws) {
+
+            ws.sockets.on('connection', socket => {
+                console.log(socket.id);
+                socket.on('connect user', (id, cb) => {
+
+                })
+            })
+        }
     }
 
     join(user) {
@@ -32,6 +40,10 @@ class Room {
             }
             this.users[user.id] = user;
             this.sendMetadataUpdate()
+            let self = this;
+            setInterval(() => {
+                self.socket.in(self.id).emit('test', 'every 2 seconds');
+            }, 2000)
             return true;
         }
         return false;

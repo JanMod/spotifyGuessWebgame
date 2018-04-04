@@ -6,7 +6,10 @@ module.exports = function (app) {
     _io.sockets.on('connection', socket => {
         console.log(socket.id);
         socket.join('newRoom');
-        socket.emit('newRoom', { nothing: 'lul' });
+        socket.emit('newRoom', {  });
+        socket.on('connect user', (id,cb)=>{
+
+        })
     })
 
     _io.broadcastNewRoom =  function (room) {

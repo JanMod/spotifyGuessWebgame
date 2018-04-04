@@ -40,7 +40,7 @@ router.post('/createUser', (req, res) => {
     }
     if (isUserNameAvailable(req.body.name)) {
         console.log(req.body);
-        let user = new User(req.body.name);
+        let user = new User(req.body.name, ws);
         users[user.id] = user;
         res.json(user);
     } else {
@@ -64,14 +64,13 @@ router.get('/Rooms', (req, res) => {
 });
 
 router.post('/joinRoom', (req, res) => {
-    console.log(req.body);
     let user = users[req.body.user.id];
 
     if (user) {
         let room = rooms[req.body.id];
         if (room) {
             room.join(user);
-            res.json("Joined");
+            res.json(req.body);
         } else {
             sendError('Room not found', res);
         }
@@ -109,7 +108,7 @@ var isUserNameAvailable = function (name) {
 
 var createNewRoom = function (data, client, successCb, errorCb) {
 
-    var newroom = new Room(data.name, client)
+    var newroom = new Room(data.name, client, data.pw, ws);
 
     if (newroom) {
         console.log(newroom.metadata);

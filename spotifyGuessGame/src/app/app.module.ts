@@ -31,6 +31,10 @@ import { CreateUserComponent } from './components/create-user/create-user.compon
 import { UserService } from './service/user.service';
 import { DialogComponent } from './service/warning-dialog/dialog-component/dialog/dialog.component';
 import { WarningDialogService } from './service/warning-dialog/warning-dialog.service';
+import { GameRoomComponent } from './components/game-room/game-room.component';
+
+//Modules
+import { RoomModule } from './modules/room/room.module';
 
 const appRoutes: Routes = [
   {
@@ -39,7 +43,7 @@ const appRoutes: Routes = [
   },
   {
     path: 'room:id',
-    component: CreateUserComponent
+    component: GameRoomComponent
   },
   {
     path: 'rooms',
@@ -59,7 +63,8 @@ const appRoutes: Routes = [
     CreateSnackBar,
     PipePipe,
     CreateUserComponent,
-    DialogComponent
+    DialogComponent,
+    GameRoomComponent
   ],
   imports: [
     BrowserModule,
@@ -74,7 +79,8 @@ const appRoutes: Routes = [
     HttpClientModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
-    MatListModule
+    MatListModule,
+    RoomModule
   ],
   exports: [
     MatInputModule,

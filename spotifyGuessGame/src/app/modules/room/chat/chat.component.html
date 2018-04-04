@@ -1,3 +1,10 @@
 <p>
   chat works!
 </p>
+<mat-list>
+  <div>
+    <mat-list-item *ngFor="let message of messages">{{message}}
+      <mat-divider></mat-divider>
+    </mat-list-item>
+  </div>
+</mat-list>
