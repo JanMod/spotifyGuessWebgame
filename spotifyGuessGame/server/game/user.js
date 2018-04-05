@@ -1,18 +1,8 @@
 class User {
-    constructor(name, ws) {
+    constructor(name) {
         this.name = name;
         this.id = require('uuid/v4')();
         //this.icon = TODO
-        this.socket = {};
-
-        global.io.sockets.on('connection', socket => {
-            socket.on(this.id, (data, cb) => {
-                console.log("User");
-                this.socket = socket;
-            })
-        })
-
-
     }
 
 
@@ -23,6 +13,10 @@ class User {
 
     send(msg) {
 
+    }
+
+    setSocket(socket){
+        this.socket = socket;
     }
 }
 

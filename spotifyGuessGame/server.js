@@ -3,8 +3,10 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const http = require('http');
 const app = express();
-const api = require('./server/routes/api');
-
+var socket = require('socket.io');
+var apiArray = require('./server/routes/api')();
+const api = apiArray[0];
+const apiSocket = apiArray[1];
 // API file for interacting with MongoDB
 
 app.use(function (req, res, next) {
@@ -50,5 +52,5 @@ const server = http.createServer(app);
 server.listen(port, () => console.log(`Running on localhost:${port}`));
 
 //api.connectWs(server);
-const ws = require('./server/ws')(server);
+apiSocket(socket(server));
 

@@ -5,23 +5,39 @@ const ObjectID = require('mongodb').ObjectID;
 const Room = require('../game/room.js');
 const User = require('../game/user.js');
 
-var ws = global.io;
 
+//store rooms and users in array dictionary
 var rooms = [];
 var users = [];
-// Connect
-const connection = (closure) => {
-    return MongoClient.connect('mongodb://localhost:27017/mean', (err, db) => {
-        if (err) return console.log(err);
 
-        closure(db);
-    });
-};
+var ws= {};
+
+var connectSocket = function (_socket) {
+    ws.socket = _socket;
+    ws.socket.sockets.on('connection', socket => {
+        console.log(socket.id);
+        socket.join('newRoom');
+        socket.on('setUserWs', (data, cb) => {
+            if(isUserCreated(data.id)){
+                users[data.id].setSocket(socket);
+                cb(true);
+            }else{
+                cb(false);
+            }
+        })
+    })
+
+    ws.broadcastNewRoom =  function (room) {
+        ws.socket.sockets.to('newRoom').emit('newRoom', room);
+    }
+
+}
+
 
 // Error handling
 const sendError = (err, res) => {
     response.status = 501;
-    response.message = typeof err == 'object' ? err.message : err;
+    response.message = err;
     res.status(501).json(response);
 };
 
@@ -40,7 +56,7 @@ router.post('/createUser', (req, res) => {
     }
     if (isUserNameAvailable(req.body.name)) {
         console.log(req.body);
-        let user = new User(req.body.name, ws);
+        let user = new User(req.body.name);
         users[user.id] = user;
         res.json(user);
     } else {
@@ -108,11 +124,11 @@ var isUserNameAvailable = function (name) {
 
 var createNewRoom = function (data, client, successCb, errorCb) {
 
-    var newroom = new Room(data.name, client, data.pw, ws);
+    var newroom = new Room(data.name, client, data.pw, ws.broadcastNewRoom);
 
     if (newroom) {
-        console.log(newroom.metadata);
-        global.io.broadcastNewRoom(newroom.metadata);
+        console.log(newroom.getMetadata());
+        ws.broadcastNewRoom(newroom.getMetadata())
         rooms[newroom.id] = newroom;
         successCb(newroom);
     }
@@ -125,4 +141,6 @@ var createNewRoom = function (data, client, successCb, errorCb) {
     }
 }
 
-module.exports = router;
+module.exports = () => {
+    return [router, connectSocket];
+}

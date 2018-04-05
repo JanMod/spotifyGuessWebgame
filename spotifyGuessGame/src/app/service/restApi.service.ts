@@ -41,7 +41,7 @@ export class RestApiService {
     public connectUserWs (id): Rx.Observable<MessageEvent>{
        
         var _socket = this.socket;
-        this.socket.emit(id, {kur:"nic"}, data =>{
+        this.socket.emit('setUserWs', {id}, data =>{
             console.log("worked");
         });
         return Rx.Observable.fromEventPattern( data =>{

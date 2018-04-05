@@ -1,5 +1,5 @@
 class Room {
-    constructor(name, host, password, ws) {
+    constructor(name, host, password, broadcastNewRoom) {
         this.id = require('uuid/v4')();
         this.game = require('../game/game.js');
 
@@ -10,39 +10,19 @@ class Room {
         // this.host = host;
         console.log('new room created');
         this.currentUsers = 0;
-        this.metadata = {
-            id: this.id,
-            name: this.name,
-            password: this.password,
-            numberUser: this.currentUsers,
-            max: this.max
-        }
-        if (ws) {
 
-            ws.sockets.on('connection', socket => {
-                console.log(socket.id);
-                socket.on('connect user', (id, cb) => {
-
-                })
-            })
-        }
+        this.broadcastNewRoom = broadcastNewRoom;
     }
 
     join(user) {
         if (this.currentUsers < this.max) {
             this.currentUsers++;
-            this.metadata = {
-                id: this.id,
-                name: this.name,
-                password: this.password,
-                numberUser: this.currentUsers,
-                max: this.max
-            }
+
             this.users[user.id] = user;
             this.sendMetadataUpdate()
             let self = this;
             setInterval(() => {
-                self.socket.in(self.id).emit('test', 'every 2 seconds');
+                //self.socket.in(self.id).emit('test', 'every 2 seconds');
             }, 2000)
             return true;
         }
@@ -50,7 +30,17 @@ class Room {
     }
 
     removeUser(user) {
+            delete this.users[user.id];
+    }
 
+    getMetadata() {
+        return {
+            id: this.id,
+            name: this.name,
+            password: this.password,
+            numberUser: this.currentUsers,
+            max: this.max
+        }
     }
 
     changeName(name) {
@@ -70,8 +60,7 @@ class Room {
     }
 
     sendMetadataUpdate() {
-        console.log(this.metadata);
-        global.io.broadcastNewRoom(this.metadata);
+        this.broadcastNewRoom(this.getMetadata());
     }
 }
 
