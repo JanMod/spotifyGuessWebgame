@@ -7,7 +7,8 @@ class Room {
         this.password = password;
         this.users = [];
         this.max = 8;
-        // this.host = host;
+        this.host = host;
+        this.join(this.host);
         console.log('new room created');
         this.currentUsers = 0;
 
@@ -16,13 +17,14 @@ class Room {
 
     join(user) {
         if (this.currentUsers < this.max) {
-            this.currentUsers++;
-
             this.users[user.id] = user;
+            console.log(this.users.length);
+            this.currentUsers++;
             this.sendMetadataUpdate()
             let self = this;
+            user.socket.join(this.id);    
             setInterval(() => {
-                //self.socket.in(self.id).emit('test', 'every 2 seconds');
+                user.socket.emit('newRoom', user.name);
             }, 2000)
             return true;
         }
