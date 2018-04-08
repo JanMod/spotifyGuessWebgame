@@ -14,9 +14,12 @@ interface RoomsResponse {
     numberUser: number;
     max: number;
 }
-
 interface RoomsResponse extends Array<RoomsResponse>{}
 
+interface JoinRoomResponse {
+    id: string;
+    user: JSON
+}
 
 @Injectable()
 
@@ -26,7 +29,7 @@ export class RestApiService {
     response: any;
     private socket;
     constructor(private http: HttpClient, private user: UserService) {
-        this.socket = io.connect("localhost:8000");
+        this.socket = io.connect("/");
     }
 
 
@@ -92,27 +95,31 @@ export class RestApiService {
 
     createRoom(data) {
         let id = this.user.getId();
-        return this.http.post('http://localhost:8000/api/createRoom', {
+        return this.http.post('api/createRoom', {
             data: data,
             userid: id
         });
     }
 
     createUser(name) {
-        return this.http.post('http://localhost:8000/api/createUser', name);
+        return this.http.post('api/createUser', name);
     }
 
 
     getRooms() {
-        return this.http.get<RoomsResponse>('http://localhost:8000/api/Rooms');
+        return this.http.get<RoomsResponse>('api/Rooms');
     }
 
     joinRoom(id) {
-        return this.http.post('http://localhost:8000/api/joinRoom', { user: this.user.getUser(), id: id });
+        return this.http.post<JoinRoomResponse>('api/joinRoom', { user: this.user.getUser(), id: id });
     }
 
     leaveRoom() {
 
+    }
+
+    getSocket() {
+        return this.socket;
     }
 
 }

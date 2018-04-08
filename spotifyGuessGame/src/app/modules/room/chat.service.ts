@@ -1,22 +1,29 @@
 import { Injectable } from '@angular/core';
 import * as Rx from 'rxjs/Rx';
 import * as io from 'socket.io-client';
+import {RestApiService} from '../../service/restApi.service';
+import {UserService} from '../../service/user.service';
 
 @Injectable()
 export class ChatService {
 
   private socket;
 
-  constructor() { }
+  constructor(private restApi : RestApiService, private user:UserService) {
+   this.socket = this.restApi.getSocket();
+  }
 
-  public connectChat(roomid): Rx.Observable<MessageEvent> {
-    this.socket = io.connect('localhost:8000');
+  connectChat(roomid): Rx.Observable<MessageEvent> {
     var _socket = this.socket;
     return Rx.Observable.fromEventPattern(data => {
-      _socket.on(roomid, data);
+      _socket.on('roomMessage', data);
     }
-
     )
-
   }
+
+  sendMessage(msg){
+    this.socket.emit(this.user.getRoom(), msg);
+  }
+
+
 }

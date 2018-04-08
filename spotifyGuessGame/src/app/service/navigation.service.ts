@@ -7,14 +7,14 @@ export class NavigationService {
   constructor(private router:Router) { }
 
   viewCreateUser(){
-    this.router.navigate(['/'], {replaceUrl: true});
+    this.router.navigate(['/'], {replaceUrl: false});
   }
 
   viewRooms(){
-    this.router.navigate(['/rooms'], {replaceUrl: true});
+    this.router.navigate(['/rooms'], {replaceUrl: false});
   }
 
   viewRoom(id){
-    this.router.navigate(['/rooms', id], {replaceUrl: true});
+    this.router.navigate(['/room', id], {replaceUrl: false});
   }
 }

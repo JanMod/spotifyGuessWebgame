@@ -10,7 +10,7 @@ const User = require('../game/user.js');
 var rooms = [];
 var users = [];
 
-var ws= {};
+var ws = {};
 
 var connectSocket = function (_socket) {
     ws.socket = _socket;
@@ -18,16 +18,21 @@ var connectSocket = function (_socket) {
         console.log(socket.id);
         socket.join('newRoom');
         socket.on('setUserWs', (data, cb) => {
-            if(isUserCreated(data.id)){
+            if (isUserCreated(data.id)) {
                 users[data.id].setSocket(socket);
                 cb(true);
-            }else{
+            } else {
                 cb(false);
             }
         })
     })
 
-    ws.broadcastNewRoom =  function (room) {
+    ws.socket.on('roomid', msg => {
+        console.log(msg);
+        this.broadcast(msg);
+    });
+
+    ws.broadcastNewRoom = function (room) {
         ws.socket.sockets.to('newRoom').emit('newRoom', room);
     }
 
@@ -55,7 +60,6 @@ router.post('/createUser', (req, res) => {
         return;
     }
     if (isUserNameAvailable(req.body.name)) {
-        console.log(req.body);
         let user = new User(req.body.name);
         users[user.id] = user;
         res.json(user);
@@ -66,17 +70,28 @@ router.post('/createUser', (req, res) => {
 });
 
 router.post('/createRoom', (req, res) => {
-    createNewRoom(req.body, req, result => {
-        response.data = result;
-        res.json(response);
-    }, err => {
-        sendError(err, res);
-    });
+    let user = users[req.body.userid];
+    if (!user) {
+        sendError("User not found", res);
+    } {
+        createNewRoom(req.body.data, user, result => {
+            response.message = result;
+            res.json(response);
+        }, err => {
+            sendError(err, res);
+        });
+    }
 });
 
 router.get('/Rooms', (req, res) => {
     response.data = rooms;
-    res.json(response);
+    var output = []
+    for (var key in rooms) {
+        if (rooms.hasOwnProperty(key)) {
+            output.push(rooms[key].getMetadata());
+        }
+    }
+    res.send(output);
 });
 
 router.post('/joinRoom', (req, res) => {
@@ -124,13 +139,13 @@ var isUserNameAvailable = function (name) {
 
 var createNewRoom = function (data, client, successCb, errorCb) {
 
-    var newroom = new Room(data.name, client, data.pw, ws.broadcastNewRoom);
+    var newroom = new Room(data.name, client, data.pw, ws);
 
     if (newroom) {
         console.log(newroom.getMetadata());
         ws.broadcastNewRoom(newroom.getMetadata())
         rooms[newroom.id] = newroom;
-        successCb(newroom);
+        successCb("Room created");
     }
     else {
         errorCb('Internal Error', {

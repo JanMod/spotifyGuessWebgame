@@ -32,7 +32,7 @@ import { UserService } from './service/user.service';
 import { DialogComponent } from './service/warning-dialog/dialog-component/dialog/dialog.component';
 import { WarningDialogService } from './service/warning-dialog/warning-dialog.service';
 import { GameRoomComponent } from './components/game-room/game-room.component';
-
+import { NavigationService } from './service/navigation.service'
 //Modules
 import { RoomModule } from './modules/room/room.module';
 
@@ -42,7 +42,7 @@ const appRoutes: Routes = [
     component: CreateUserComponent
   },
   {
-    path: 'room:id',
+    path: 'room/:id',
     component: GameRoomComponent
   },
   {
@@ -93,7 +93,8 @@ const appRoutes: Routes = [
     ResponseSnackbarService,
     RoomsServiceService,
     UserService,
-    WarningDialogService
+    WarningDialogService,
+    NavigationService
   ],
   bootstrap: [AppComponent]
 })

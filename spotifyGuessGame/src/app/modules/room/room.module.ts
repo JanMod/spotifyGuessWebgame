@@ -7,6 +7,8 @@ import { MatListModule } from '@angular/material/list';
 
 //Service
 import {ChatService} from './chat.service';
+import {RestApiService} from '../../service/restApi.service';
+import {UserService} from '../../service/user.service';
 @NgModule({
   imports: [
     CommonModule,
@@ -20,7 +22,9 @@ import {ChatService} from './chat.service';
     ViewComponent
   ],
   providers:[
-    ChatService
+    ChatService,
+    RestApiService,
+    UserService
   ]
 })
 export class RoomModule { }

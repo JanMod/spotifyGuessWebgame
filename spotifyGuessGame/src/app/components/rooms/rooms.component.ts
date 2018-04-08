@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { RoomsServiceService } from '../../service/roomsService/rooms-service.service';
 import { PipePipe } from '../../Pipes/pipe.pipe';
 import { WarningDialogService } from '../../service/warning-dialog/warning-dialog.service';
+import { NavigationService } from '../../service/navigation.service';
+import { UserService } from '../../service/user.service';
 @Component({
   selector: 'app-rooms',
   templateUrl: './rooms.component.html',
@@ -13,16 +15,16 @@ export class RoomsComponent implements OnInit {
   private rooms: any[] = [];
   private config: JSON;
 
-  constructor(private roomService: RoomsServiceService, private warningDialog: WarningDialogService) {
+  constructor(private roomService: RoomsServiceService, 
+    private warningDialog: WarningDialogService, private navigation: NavigationService, private user: UserService) {
 
   }
 
   ngOnInit() {
     this.roomService.getAllRooms().subscribe(data => {
-      data.forEach(element =>{
-       this.rooms[element.id]  = element;
+      data.forEach(element => {
+        this.rooms[element.id] = element;
       })
-    
     }, error => {
       console.log('error' + error);
     })
@@ -39,15 +41,18 @@ export class RoomsComponent implements OnInit {
 
   join(id) {
     this.warningDialog.openDialog().subscribe(value => {
-      if(value){
-        this.roomService.joinRoom(id).subscribe(value =>{
+      if (value) {
+        this.roomService.joinRoom(id).subscribe(value => {
           console.log(value);
-          console.log("Joined room");
+          this.user.addRoom(value.id);
+          this.navigation.viewRoom(value.id);
+
         }),
-        error => {
-       
-        }
+          error => {
+
+          }
       }
-    })}
+    })
+  }
 
 }

@@ -1,8 +1,10 @@
 class Room {
-    constructor(name, host, password, broadcastNewRoom) {
+    constructor(name, host, password, ws) {
         this.id = require('uuid/v4')();
-        this.game = require('../game/game.js');
-
+        this.chat = require('../game/chat.js')(ws, this.id);
+        //this.game = require('../game/game.js')();
+        this.ws = ws;
+        //this.ws.socket.join(this.id);
         this.name = name;
         this.password = password;
         this.users = [];
@@ -12,7 +14,7 @@ class Room {
         console.log('new room created');
         this.currentUsers = 0;
 
-        this.broadcastNewRoom = broadcastNewRoom;
+        this.broadcastChanges = ws.broadcastNewRoom;
     }
 
     join(user) {
@@ -24,8 +26,13 @@ class Room {
             let self = this;
             user.socket.join(this.id);    
             setInterval(() => {
-                user.socket.emit('newRoom', user.name);
+               // user.socket.emit('roomMessage', user.name);
             }, 2000)
+            user.socket.on(this.id, data => {
+                user.socket.broadcast.to(this.id).emit('roomMessage', data);
+            });
+            user.socket.broadcast.to(this.id).emit('roomMessage', user.name+ ' joined room.');
+          //s  this.ws.socket.sockets.in(this.id).emit('roomMessage', user.name+ ' joined room.');
             return true;
         }
         return false;
@@ -62,7 +69,7 @@ class Room {
     }
 
     sendMetadataUpdate() {
-        this.broadcastNewRoom(this.getMetadata());
+        this.broadcastChanges(this.getMetadata());
     }
 }
 

@@ -1,10 +1,15 @@
-<p>
-  chat works!
-</p>
-<mat-list>
-  <div>
-    <mat-list-item *ngFor="let message of messages">{{message}}
-      <mat-divider></mat-divider>
-    </mat-list-item>
-  </div>
-</mat-list>
+<div class="chat-view">
+
+  <mat-list>
+    <div>
+      <mat-list-item *ngFor="let message of messages">{{message}}
+        <mat-divider></mat-divider>
+      </mat-list-item>
+    </div>
+  </mat-list>
+
+</div>
+<div class="chat-input">
+  <input  class="input-feld" type="text" #msg>
+  <button (click)="sendMessage(msg.value)" class="button-feld">send</button>
+</div>

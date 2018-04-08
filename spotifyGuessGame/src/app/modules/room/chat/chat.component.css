@@ -1,0 +1,17 @@
+.chat-view{
+    height:90%;
+}
+
+.chat-input {
+    display: grid;
+    grid-template-columns: 80% 20%;
+ 
+}
+
+.input-feld{
+    grid-column: 1;
+}
+
+.button-feld{
+    grid-column: 2;
+}
