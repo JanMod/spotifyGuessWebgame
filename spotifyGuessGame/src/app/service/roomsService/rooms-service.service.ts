@@ -19,7 +19,7 @@ export class RoomsServiceService {
 				}
 	  });*/
 	  
-	  this.roomEvent = wsService.connectIO('localhost:8000');
+	  this.roomEvent = wsService.connectIO();
 
 	}
 

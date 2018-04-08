@@ -1,14 +1,27 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Component } from '@angular/core/src/metadata/directives';
-import { UserService} from './user.service';
+import { UserService } from './user.service';
 import * as Rx from 'rxjs/Rx';
 import * as io from 'socket.io-client';
+
+
+
+interface RoomsResponse {
+    id: string;
+    name: string;
+    password: string;
+    numberUser: number;
+    max: number;
+}
+
+interface RoomsResponse extends Array<RoomsResponse>{}
+
 
 @Injectable()
 
 export class RestApiService {
-    private data:JSON;
+    private data: JSON;
     private createRoomRoute: string;
     response: any;
     private socket;
@@ -27,27 +40,27 @@ export class RestApiService {
         return this.subject;
     }
 
-    public connectIO (url): Rx.Observable<MessageEvent>{
-     
+    public connectIO(): Rx.Observable<MessageEvent> {
+
         var _socket = this.socket;
-        return Rx.Observable.fromEventPattern( data =>{
+        return Rx.Observable.fromEventPattern(data => {
             _socket.on('newRoom', data);
         }
-            
+
         )
 
     }
 
-    public connectUserWs (id): Rx.Observable<MessageEvent>{
-       
+    public connectUserWs(id): Rx.Observable<MessageEvent> {
+
         var _socket = this.socket;
-        this.socket.emit('setUserWs', {id}, data =>{
-            console.log("worked");
+        this.socket.emit('setUserWs', { id }, data => {
+
         });
-        return Rx.Observable.fromEventPattern( data =>{
+        return Rx.Observable.fromEventPattern(data => {
             _socket.on(id, data);
         }
-            
+
         )
 
     }
@@ -78,22 +91,24 @@ export class RestApiService {
     }
 
     createRoom(data) {
-        
-        console.log(data);
-        return this.http.post('http://localhost:8000/api/createRoom', data);
+        let id = this.user.getId();
+        return this.http.post('http://localhost:8000/api/createRoom', {
+            data: data,
+            userid: id
+        });
     }
 
-    createUser(name){
+    createUser(name) {
         return this.http.post('http://localhost:8000/api/createUser', name);
     }
 
 
-    getRooms(){
-        return this.http.get('http://localhost:8000/api/Rooms');
+    getRooms() {
+        return this.http.get<RoomsResponse>('http://localhost:8000/api/Rooms');
     }
 
-    joinRoom(id){
-        return this.http.post('http://localhost:8000/api/joinRoom', {user: this.user.getUser(), id: id});
+    joinRoom(id) {
+        return this.http.post('http://localhost:8000/api/joinRoom', { user: this.user.getUser(), id: id });
     }
 
     leaveRoom() {

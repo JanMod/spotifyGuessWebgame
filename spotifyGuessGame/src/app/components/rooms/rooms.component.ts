@@ -18,8 +18,11 @@ export class RoomsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.roomService.getAllRooms().subscribe(v => {
-      console.log(v);
+    this.roomService.getAllRooms().subscribe(data => {
+      data.forEach(element =>{
+       this.rooms[element.id]  = element;
+      })
+    
     }, error => {
       console.log('error' + error);
     })
@@ -29,7 +32,6 @@ export class RoomsComponent implements OnInit {
         return;
       }
       this.rooms[v.id] = v;
-      console.log(this.rooms);
     }, error => {
       console.log('error' + error);
     })
@@ -39,7 +41,8 @@ export class RoomsComponent implements OnInit {
     this.warningDialog.openDialog().subscribe(value => {
       if(value){
         this.roomService.joinRoom(id).subscribe(value =>{
-        
+          console.log(value);
+          console.log("Joined room");
         }),
         error => {
        
