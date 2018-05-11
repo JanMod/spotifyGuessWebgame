@@ -9,12 +9,13 @@ class Room {
         this.password = password;
         this.users = [];
         this.max = 8;
+        this.broadcastChanges = ws.broadcastNewRoom;
+        this.currentUsers = 0;
         this.host = host;
         this.join(this.host);
         console.log('new room created');
-        this.currentUsers = 0;
 
-        this.broadcastChanges = ws.broadcastNewRoom;
+
     }
 
     join(user) {
@@ -24,22 +25,25 @@ class Room {
             this.currentUsers++;
             this.sendMetadataUpdate()
             let self = this;
-            user.socket.join(this.id);    
+            user.socket.join(this.id);
             setInterval(() => {
-               // user.socket.emit('roomMessage', user.name);
+                // user.socket.emit('roomMessage', user.name);
             }, 2000)
             user.socket.on(this.id, data => {
-                user.socket.broadcast.to(this.id).emit('roomMessage', data);
+                user.socket.broadcast.to(this.id).emit('roomMessage', {
+                    message: data.message,
+                    name: data.user.name
+                });
             });
-            user.socket.broadcast.to(this.id).emit('roomMessage', user.name+ ' joined room.');
-          //s  this.ws.socket.sockets.in(this.id).emit('roomMessage', user.name+ ' joined room.');
+            user.socket.broadcast.to(this.id).emit('roomMessage', user.name + ' joined room.');
+            //s  this.ws.socket.sockets.in(this.id).emit('roomMessage', user.name+ ' joined room.');
             return true;
         }
         return false;
     }
 
     removeUser(user) {
-            delete this.users[user.id];
+        delete this.users[user.id];
     }
 
     getMetadata() {

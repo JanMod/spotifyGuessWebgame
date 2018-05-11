@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 .full-width{
     width:100%;
 }
@@ -11,8 +11,56 @@
 
 body{
     height:100%;
+    margin:0px;
 }
 
 html{
     height:100%;
+}
+
+app-root{
+    height:100%;
+    display:grid;
+    grid-template-rows: 10% 90%;
+    grid-template-areas: 
+    "navbar navbar"
+    "content content";
+
+    min-width: 0;
+     min-height: 0;
+}
+
+.navbar{
+    grid-area: navbar;
+    background: red;
+}
+
+.content{
+    grid-area: content;
+    overflow: auto;
+    min-width: 0;
+    min-height: 0;
+}
+
+.flexbox-container{
+    display: flex; /* or inline-flex */
+}
+
+
+.div-padding{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.flex-item{
+    flex-grow: 0;
+}
+
+.flex-item-auto{
+    flex: auto;
+}
+
+
+.small-font{
+    font-size: 12px;
 }

@@ -1,15 +1,20 @@
-<div class="chat-view">
+<div>
+  <div class="chat-view">
 
-  <mat-list>
-    <div>
-      <mat-list-item *ngFor="let message of messages">{{message}}
-        <mat-divider></mat-divider>
-      </mat-list-item>
-    </div>
-  </mat-list>
+    <mat-list>
+      <div>
+        <mat-list-item *ngFor="let message of messages" style="height:20px;">
+          <span class="small-font">
+            {{message.name}}: {{message.message}}
+          </span>
+          <mat-divider></mat-divider>
+        </mat-list-item>
+      </div>
+    </mat-list>
 
-</div>
-<div class="chat-input">
-  <input  class="input-feld" type="text" #msg>
-  <button (click)="sendMessage(msg.value)" class="button-feld">send</button>
+  </div>
+  <mat-card class="chat-input">
+    <input class="input-feld" type="text" #msg>
+    <button (click)="sendMessage(msg.value)" class="button-feld">send</button>
+  </mat-card>
 </div>

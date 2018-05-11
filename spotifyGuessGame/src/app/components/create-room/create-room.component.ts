@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, } from '@angular/material';
 import { RestApiService } from '../../service/restApi.service';
+import { NavigationService } from '../../service/navigation.service';
 import { ResponseSnackbarService } from '../../service/responseSnackbarService/response-snackbar.service';
 @Component({
   selector: 'app-create-room',
@@ -14,7 +15,7 @@ export class CreateRoomComponent implements OnInit {
   response: any;
   name: string;
   password: string;
-  constructor(private dialog: MatDialog, private rest: RestApiService, private responseSnackBar: ResponseSnackbarService) {
+  constructor(private dialog: MatDialog, private rest: RestApiService, private responseSnackBar: ResponseSnackbarService, private navigation: NavigationService) {
   }
 
   ngOnInit() {
@@ -30,7 +31,10 @@ export class CreateRoomComponent implements OnInit {
 
     this.dialogRef.afterClosed().subscribe(result => {
       if(result){
-        this.rest.createRoom(result).subscribe();
+        this.rest.createRoom(result).subscribe(result => {
+          console.log(result);
+          this.navigation.viewRoom(result.data);
+        });
       }
      
     })

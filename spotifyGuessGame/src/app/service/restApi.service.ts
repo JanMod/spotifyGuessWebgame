@@ -21,6 +21,11 @@ interface JoinRoomResponse {
     user: JSON
 }
 
+interface createRoomResponse  {
+    data : string;
+    message : string;
+}
+
 @Injectable()
 
 export class RestApiService {
@@ -29,7 +34,7 @@ export class RestApiService {
     response: any;
     private socket;
     constructor(private http: HttpClient, private user: UserService) {
-        this.socket = io.connect("/");
+        this.socket = io.connect("http://192.168.178.61:8000/");
     }
 
 
@@ -90,32 +95,36 @@ export class RestApiService {
     }
 
     ngOnInit() {
-        this.createRoomRoute = 'api/createRoom';
+        this.createRoomRoute = 'http://192.168.178.61:8000/api/createRoom';
     }
 
     createRoom(data) {
         let id = this.user.getId();
-        return this.http.post('api/createRoom', {
+        return this.http.post<createRoomResponse>('http://192.168.178.61:8000/api/createRoom', {
             data: data,
             userid: id
         });
     }
 
     createUser(name) {
-        return this.http.post('api/createUser', name);
+        return this.http.post('http://192.168.178.61:8000/api/createUser', name);
     }
 
 
     getRooms() {
-        return this.http.get<RoomsResponse>('api/Rooms');
+        return this.http.get<RoomsResponse>('http://192.168.178.61:8000/api/Rooms');
     }
 
     joinRoom(id) {
-        return this.http.post<JoinRoomResponse>('api/joinRoom', { user: this.user.getUser(), id: id });
+        return this.http.post<JoinRoomResponse>('http://192.168.178.61:8000/api/joinRoom', { user: this.user.getUser(), id: id });
     }
 
     leaveRoom() {
 
+    }
+
+    checkUser(){
+        
     }
 
     getSocket() {

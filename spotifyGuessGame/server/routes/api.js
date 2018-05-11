@@ -75,7 +75,8 @@ router.post('/createRoom', (req, res) => {
         sendError("User not found", res);
     } {
         createNewRoom(req.body.data, user, result => {
-            response.message = result;
+            response.message = "Room created";
+            response.data =  result;
             res.json(response);
         }, err => {
             sendError(err, res);
@@ -109,6 +110,14 @@ router.post('/joinRoom', (req, res) => {
         sendError('User not found', res);
     }
 });
+
+router.get('/checkUser', (req, res) => {
+    if (isUserCreated(req.id)) {
+
+    } else {
+
+    }
+})
 
 var isUserCreated = function (token) {
     if (token in users) {
@@ -145,7 +154,7 @@ var createNewRoom = function (data, client, successCb, errorCb) {
         console.log(newroom.getMetadata());
         ws.broadcastNewRoom(newroom.getMetadata())
         rooms[newroom.id] = newroom;
-        successCb("Room created");
+        successCb(newroom.getMetadata().id);
     }
     else {
         errorCb('Internal Error', {

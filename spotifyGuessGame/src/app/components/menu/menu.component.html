@@ -1,0 +1,28 @@
+<div class="flexbox-container">
+  <div class="flex-item">
+
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="fullscreenApp()">
+        <mat-icon>dialpad</mat-icon>
+        <span>Fullscreen</span>
+      </button>
+    </mat-menu>
+  </div>
+  <div class="flex-item-auto" style="text-align: center">
+    <h1>PartyGame</h1>
+  </div>
+  <div class="flex-item">
+    <button mat-icon-button [matMenuTriggerFor]="hostOptions">
+      <mat-icon>host</mat-icon>
+    </button>
+    <mat-menu #hostOptions="matMenu">
+      <button mat-menu-item (click)="fullscreenApp()">
+        <mat-icon>dialpad</mat-icon>
+        <span>Spotify Guess Game</span>
+      </button>
+    </mat-menu>
+  </div>
+</div>

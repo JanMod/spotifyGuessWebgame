@@ -31,4 +31,9 @@ export class UserService {
   getRoom(){
     return this.roomId;
   }
+
+  getName(){
+    return this.user.name;
+  }
+  
 }

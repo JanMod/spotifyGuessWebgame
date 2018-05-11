@@ -1,7 +1,12 @@
-<form>
-  <h1>Create an user</h1>
-    <mat-form-field class="full-width">
-        <input matInput required [(ngModel)]="name" placeholder="Name" value="" name="roomNameInput">
-    </mat-form-field>
-    <button class="center" (click)="submit()" mat-button>Create</button>
-</form>
+<div class="create-user-form">
+    <form name='groupForm' #groupForm="ngForm">
+        <h2>Create user</h2>
+        <mat-form-field class="full-width">
+            <input matInput required [(ngModel)]="name" placeholder="Name" value="" name="roomNameInput">
+            <mat-hint *ngIf="error">Username already used</mat-hint>
+        </mat-form-field>
+
+        <button mat-raised-button (click)="submit()" [disabled]="!groupForm.valid" color="primary">Create</button>
+
+    </form>
+</div>

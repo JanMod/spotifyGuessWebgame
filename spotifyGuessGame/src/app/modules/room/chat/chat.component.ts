@@ -23,9 +23,15 @@ export class ChatComponent implements OnInit {
     )
   }
 
-  sendMessage(msg){
+  sendMessage(msg) {
     console.log(msg);
+    var message = {
+      name: 'me',
+      message: msg
+    }
+    this.messages.push(message);
     this.chat.sendMessage(msg);
+  
   }
 
 }

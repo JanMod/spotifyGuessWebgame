@@ -20,6 +20,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
 
 
 //Service
@@ -35,6 +37,7 @@ import { GameRoomComponent } from './components/game-room/game-room.component';
 import { NavigationService } from './service/navigation.service'
 //Modules
 import { RoomModule } from './modules/room/room.module';
+import { MenuComponent } from './components/menu/menu.component';
 
 const appRoutes: Routes = [
   {
@@ -64,7 +67,8 @@ const appRoutes: Routes = [
     PipePipe,
     CreateUserComponent,
     DialogComponent,
-    GameRoomComponent
+    GameRoomComponent,
+    MenuComponent
   ],
   imports: [
     BrowserModule,
@@ -80,7 +84,9 @@ const appRoutes: Routes = [
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatListModule,
-    RoomModule
+    RoomModule,
+    MatMenuModule,
+    MatIconModule,
   ],
   exports: [
     MatInputModule,
