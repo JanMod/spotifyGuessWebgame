@@ -1,0 +1,7 @@
+{
+    "authentication": {
+        "url": "ttps://accounts.spotify.com/authorize",
+        "client_id": "b0d351dcda7f41dda0ee97dc433f23c6",
+        "redirect_uri": "localhost:4200/room"
+    }
+}

@@ -1,7 +1,8 @@
 class Room {
-    constructor(name, host, password, ws) {
+    constructor(name, host, password, ws, rooms) {
+        this.rooms = rooms;
         this.id = require('uuid/v4')();
-        this.chat = require('../game/chat.js')(ws, this.id);
+
         //this.game = require('../game/game.js')();
         this.ws = ws;
         //this.ws.socket.join(this.id);
@@ -12,38 +13,39 @@ class Room {
         this.broadcastChanges = ws.broadcastNewRoom;
         this.currentUsers = 0;
         this.host = host;
+        this.host.isHost = true;
+        this.chat = require('../game/chat.js')(this);
         this.join(this.host);
-        console.log('new room created');
-
 
     }
 
     join(user) {
-        if (this.currentUsers < this.max) {
+        if (this.checkIfAllreadyJoined(user)) {
+            this.chat.joinChat(user);
+        }
+        else if (this.currentUsers < this.max) {
             this.users[user.id] = user;
-            console.log(this.users.length);
             this.currentUsers++;
-            this.sendMetadataUpdate()
-            let self = this;
-            user.socket.join(this.id);
-            setInterval(() => {
-                // user.socket.emit('roomMessage', user.name);
-            }, 2000)
-            user.socket.on(this.id, data => {
-                user.socket.broadcast.to(this.id).emit('roomMessage', {
-                    message: data.message,
-                    name: data.user.name
-                });
-            });
-            user.socket.broadcast.to(this.id).emit('roomMessage', user.name + ' joined room.');
+            this.joinRoom(user);
+            this.chat.joinChat(user);
+
             //s  this.ws.socket.sockets.in(this.id).emit('roomMessage', user.name+ ' joined room.');
+            this.sendMetadataUpdate()
             return true;
         }
+
         return false;
     }
 
     removeUser(user) {
         delete this.users[user.id];
+        this.currentUsers--;
+
+
+        if (this.currentUsers === 0) {
+            delete this.rooms[this.id];
+        }
+        this.sendMetadataUpdate();
     }
 
     getMetadata() {
@@ -56,12 +58,29 @@ class Room {
         }
     }
 
+    joinRoom(user) {
+
+        let self = this;
+        user.room = this;
+
+
+    }
+
     changeName(name) {
         this.name = name;
     }
 
     changeHost(user) {
 
+    }
+
+    checkIfAllreadyJoined(user) {
+        for (let key in this.users) {
+            if (user.id === key) {
+                return true;
+            }
+        }
+        return false;
     }
 
     subsribe() {

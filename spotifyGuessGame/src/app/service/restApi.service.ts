@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Component } from '@angular/core/src/metadata/directives';
 import { UserService } from './user.service';
 import * as Rx from 'rxjs/Rx';
 import * as io from 'socket.io-client';
+import { NavigationService } from './navigation.service';
 
 
 
@@ -14,16 +15,16 @@ interface RoomsResponse {
     numberUser: number;
     max: number;
 }
-interface RoomsResponse extends Array<RoomsResponse>{}
+interface RoomsResponse extends Array<RoomsResponse> { }
 
 interface JoinRoomResponse {
     id: string;
     user: JSON
 }
 
-interface createRoomResponse  {
-    data : string;
-    message : string;
+interface createRoomResponse {
+    data: string;
+    message: string;
 }
 
 @Injectable()
@@ -33,8 +34,29 @@ export class RestApiService {
     private createRoomRoute: string;
     response: any;
     private socket;
-    constructor(private http: HttpClient, private user: UserService) {
+    constructor(private http: HttpClient, private user: UserService, private navigate: NavigationService) {
         this.socket = io.connect("http://192.168.178.61:8000/");
+
+
+        this.getUser().subscribe(data => {
+            this.user.setUser(data.user);
+            this.connectUserWs(this.user.getToken(), value => {
+                if (!value) {
+                    this.navigate.viewRoom(data.room);
+                } else {
+
+                }
+
+                console.log(data);
+                if (data.room) {
+                    this.navigate.viewRoom(data.room);
+                } else {
+                    this.navigate.viewRooms();
+                }
+            });
+        });
+
+
     }
 
 
@@ -59,17 +81,13 @@ export class RestApiService {
 
     }
 
-    public connectUserWs(id): Rx.Observable<MessageEvent> {
+    public connectUserWs(id, cb) {
 
         var _socket = this.socket;
-        this.socket.emit('setUserWs', { id }, data => {
+        let callback = cb
 
-        });
-        return Rx.Observable.fromEventPattern(data => {
-            _socket.on(id, data);
-        }
+        console.log(this.socket.emit('setUserWs', { id }, callback));
 
-        )
 
     }
 
@@ -99,17 +117,13 @@ export class RestApiService {
     }
 
     createRoom(data) {
-        let id = this.user.getId();
-        return this.http.post<createRoomResponse>('http://192.168.178.61:8000/api/createRoom', {
-            data: data,
-            userid: id
-        });
+
+        return this.http.post<createRoomResponse>('http://192.168.178.61:8000/api/createRoom', { data: data });
     }
 
     createUser(name) {
         return this.http.post('http://192.168.178.61:8000/api/createUser', name);
     }
-
 
     getRooms() {
         return this.http.get<RoomsResponse>('http://192.168.178.61:8000/api/Rooms');
@@ -119,12 +133,18 @@ export class RestApiService {
         return this.http.post<JoinRoomResponse>('http://192.168.178.61:8000/api/joinRoom', { user: this.user.getUser(), id: id });
     }
 
+    getUser() {
+        return this.http.get<any>('http://192.168.178.61:8000/api/user');
+    }
+
+
+
     leaveRoom() {
 
     }
 
-    checkUser(){
-        
+    checkUser() {
+
     }
 
     getSocket() {

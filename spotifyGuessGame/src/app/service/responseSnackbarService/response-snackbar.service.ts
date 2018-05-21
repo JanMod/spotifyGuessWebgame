@@ -8,7 +8,7 @@ export class ResponseSnackbarService {
   constructor(public matSnack: MatSnackBar) { }
   openSnackBar(response) {
     this.matSnack.openFromComponent(CreateSnackBar, {
-
+      duration: 3000,
       data: response
     });
   }
@@ -19,7 +19,7 @@ export class ResponseSnackbarService {
 @Component({
   selector: 'snack-bar-component-example-snack',
   templateUrl: 'snack-bar-component.html',
-  styles: [`.example-pizza-party { color: hotpink; }`],
+  styleUrls: ['./snack-bar.css']
 })
 
 export class CreateSnackBar {

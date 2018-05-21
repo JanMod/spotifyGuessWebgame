@@ -15,7 +15,7 @@ export class RoomsComponent implements OnInit {
   private rooms: any[] = [];
   private config: JSON;
 
-  constructor(private roomService: RoomsServiceService, 
+  constructor(private roomService: RoomsServiceService,
     private warningDialog: WarningDialogService, private navigation: NavigationService, private user: UserService) {
 
   }
@@ -33,7 +33,12 @@ export class RoomsComponent implements OnInit {
       if (!v.id) {
         return;
       }
-      this.rooms[v.id] = v;
+      if (v.numberUser === 0) {
+        delete this.rooms[v.id];
+      }
+      else {
+        this.rooms[v.id] = v;
+      }
     }, error => {
       console.log('error' + error);
     })

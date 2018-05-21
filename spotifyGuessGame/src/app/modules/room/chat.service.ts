@@ -8,22 +8,32 @@ import { UserService } from '../../service/user.service';
 export class ChatService {
 
   private socket;
-
+  private room: string;
+  private connectSocket: Rx.Observable<MessageEvent>;
   constructor(private restApi: RestApiService, private user: UserService) {
     this.socket = this.restApi.getSocket();
   }
 
   connectChat(roomid): Rx.Observable<MessageEvent> {
+    console.log('roomId:' + roomid);
+    this.room = roomid;
     var _socket = this.socket;
-    return Rx.Observable.fromEventPattern(data => {
+    let id = this.room;
+    this.connectSocket = Rx.Observable.fromEventPattern(data => {
       _socket.on('roomMessage', data);
     }
     )
+    return this.connectSocket;
   }
 
-  sendMessage(msg) {
-    
-    this.socket.emit(this.user.getRoom(), {
+  getChatSocket() {
+    return this.connectSocket;
+  }
+
+  sendMessage(msg, type) {
+
+    this.socket.emit(this.room, {
+      type: type,
       message: msg,
       user: this.user.getUser()
     });

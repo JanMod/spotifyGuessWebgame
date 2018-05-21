@@ -37,7 +37,15 @@ import { GameRoomComponent } from './components/game-room/game-room.component';
 import { NavigationService } from './service/navigation.service'
 //Modules
 import { RoomModule } from './modules/room/room.module';
+import { SpotifyApiModule } from './modules/spotify-api/spotify-api.module';
 import { MenuComponent } from './components/menu/menu.component';
+
+import { Ng2Webstorage } from 'ngx-webstorage'
+
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TokenInterceptor } from './service/auth/token.interceptor';
+import { HttpResponseHandling } from './service/auth/httpResponseHandling';
+
 
 const appRoutes: Routes = [
   {
@@ -52,7 +60,9 @@ const appRoutes: Routes = [
     path: 'rooms',
     component: RoomsComponent
   },
-  { path: '**', component: CreateUserComponent }
+  {
+    path: '**', component: CreateUserComponent
+  }
 ]
 
 
@@ -85,8 +95,10 @@ const appRoutes: Routes = [
     MatProgressSpinnerModule,
     MatListModule,
     RoomModule,
+    SpotifyApiModule,
     MatMenuModule,
     MatIconModule,
+    Ng2Webstorage
   ],
   exports: [
     MatInputModule,
@@ -100,7 +112,17 @@ const appRoutes: Routes = [
     RoomsServiceService,
     UserService,
     WarningDialogService,
-    NavigationService
+    NavigationService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpResponseHandling,
+      multi: true
+    },
   ],
   bootstrap: [AppComponent]
 })

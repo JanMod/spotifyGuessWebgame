@@ -15,7 +15,7 @@ export class CreateUserComponent implements OnInit {
   private groupForm: any;
   constructor(private rest: RestApiService, private user: UserService, private router: Router) {
     this.error = false;
-   }
+  }
 
   ngOnInit() {
   }
@@ -24,9 +24,8 @@ export class CreateUserComponent implements OnInit {
     this.rest.createUser({ name: this.name }).subscribe(
       response => {
         this.user.setUser(response);
-        console.log(this.user.getName());
-        this.rest.connectUserWs(this.user.getId());
-        this.router.navigate(['/rooms'], {replaceUrl: true});
+        this.rest.connectUserWs(this.user.getToken(), null);
+        this.router.navigate(['/rooms'], { replaceUrl: true });
       },
       error => {
         this.error = true;
